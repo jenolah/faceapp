@@ -1,7 +1,7 @@
 import React from 'react'
 import './ImageLinkForm.css'
 
-const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
+const ImageLinkForm = ({ onInputChange, onButtonSubmit, faceErrorMessage }) => {
   return (
     <div>
       <p className="f3">
@@ -22,6 +22,7 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
           </button>
         </div>
       </div>
+      <p className="dark-red b--dark-red fw4 f4">{faceErrorMessage}</p>
     </div>
   )
 }

@@ -23,6 +23,7 @@ const initialState = {
     entries: 0,
     joined: '',
   },
+  faceErrorMessage: '',
 }
 
 class App extends Component {
@@ -69,36 +70,49 @@ class App extends Component {
   //Linkform
   onInputChange = event => {
     this.setState({ input: event.target.value })
+    this.setState({ faceErrorMessage: '' })
   }
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-    fetch('http://localhost:3004/imageurl', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        input: this.state.input,
-      }),
-    })
-      .then(response => response.json())
-      .then(response => {
-        if (response) {
-          fetch('http://localhost:3004/image', {
-            method: 'put',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: this.state.user.id,
-            }),
-          })
-            .then(response => response.json())
-            .then(count => {
-              this.setState(Object.assign(this.state.user, { entries: count }))
-            })
-            .catch(console.log)
-        }
-        this.displayFaceBox(this.calculateFaceLocation(response))
+    if (this.state.input === '') {
+      this.setState({ faceErrorMessage: 'Field cannot be empty' })
+    } else {
+      fetch('http://localhost:3004/imageurl', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: this.state.input,
+        }),
       })
-      .catch(err => console.log(err))
+        .then(response => response.json())
+        .then(response => {
+          if (response.outputs[0].data.regions) {
+            fetch('http://localhost:3004/image', {
+              method: 'put',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: this.state.user.id,
+              }),
+            })
+              .then(response => response.json())
+              .then(count => {
+                this.setState(
+                  Object.assign(this.state.user, { entries: count })
+                )
+              })
+              .catch(console.log)
+          } else {
+            return this.setState({ faceErrorMessage: 'No face detected' })
+          }
+          this.displayFaceBox(this.calculateFaceLocation(response))
+        })
+        .catch(err => {
+          this.setState({ faceErrorMessage: 'Invalid URL' }, () => {
+            // console.log(err)
+          })
+        })
+    }
   }
 
   //Particles
@@ -146,6 +160,7 @@ class App extends Component {
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
+              faceErrorMessage={this.state.faceErrorMessage}
             />
             <FaceRecognition box={box} imageUrl={imageUrl} />
           </div>
