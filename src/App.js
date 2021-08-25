@@ -22,6 +22,7 @@ const initialState = {
     email: '',
     entries: 0,
     joined: '',
+    rank: 0,
   },
   faceErrorMessage: '',
 }
@@ -45,6 +46,7 @@ class App extends Component {
         email: data.email,
         entries: data.entries,
         joined: data.joined,
+        rank: data.rank,
       },
     })
   }
@@ -98,7 +100,7 @@ class App extends Component {
               .then(response => response.json())
               .then(count => {
                 this.setState(
-                  Object.assign(this.state.user, { entries: count })
+                  Object.assign(this.state.user, { rank: count })
                 )
               })
               .catch(console.log)
@@ -155,7 +157,7 @@ class App extends Component {
             <Logo />
             <Rank
               name={this.state.user.name}
-              entries={this.state.user.entries}
+              rank={this.state.user.rank}
             />
             <ImageLinkForm
               onInputChange={this.onInputChange}
