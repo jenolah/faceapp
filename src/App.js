@@ -3,6 +3,7 @@ import './App.css'
 import Navigation from './components/Navigation/Navigation'
 import SignIn from './components/SignIn/SignIn'
 import Register from './components/Register/Register'
+import Profile from './components/Profile/Profile'
 import Logo from './components/Logo/Logo'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
@@ -99,9 +100,7 @@ class App extends Component {
             })
               .then(response => response.json())
               .then(count => {
-                this.setState(
-                  Object.assign(this.state.user, { rank: count })
-                )
+                this.setState(Object.assign(this.state.user, { rank: count }))
               })
               .catch(console.log)
           } else {
@@ -132,13 +131,24 @@ class App extends Component {
       return
     } else if (route === 'home') {
       this.setState({ isSignedIn: true })
-    } else if (route === 'register') {
+    } else if (route === 'profile') {
+      fetch(`http://localhost:3004/profile/${this.state.user.id}`, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.loadUser(data)
+          console.log(data)
+        })
+        .catch(console.log)
     }
     this.setState({ route: route })
   }
 
   render() {
     const { isSignedIn, imageUrl, route, box } = this.state
+    const { name, email, entries, joined, rank } = this.state.user
     return (
       <div className="App">
         <Particles
@@ -151,14 +161,12 @@ class App extends Component {
         <Navigation
           onRouteChange={this.onRouteChange}
           isSignedIn={isSignedIn}
+          route={this.state.route}
         />
         {route === 'home' ? (
           <div>
             <Logo />
-            <Rank
-              name={this.state.user.name}
-              rank={this.state.user.rank}
-            />
+            <Rank name={this.state.user.name} rank={this.state.user.rank} />
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
@@ -168,11 +176,22 @@ class App extends Component {
           </div>
         ) : route === 'signin' ? (
           <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
-        ) : (
+        ) : route === 'register' ? (
           <Register
             onRouteChange={this.onRouteChange}
             loadUser={this.loadUser}
           />
+        ) : (
+          <div className="flex">
+            <Logo />
+            <Profile
+              name={name}
+              email={email}
+              entries={entries}
+              joined={joined}
+              rank={rank}
+            />
+          </div>
         )}
       </div>
     )
