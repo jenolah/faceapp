@@ -1,135 +1,121 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './SignIn.css'
 
-class SignIn extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      signInEmail: '',
-      signInPassword: '',
-      errorMessage: '',
-      emailIsValid: false,
-      passwordIsValid: false,
-    }
-  }
+const SignIn = ({ onRouteChange, loadUser }) => {
+  const [signInEmail, setSignInEmail] = useState('')
+  const [signInPassword, setSignInPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [emailIsValid, setEmailIsValid] = useState(false)
+  const [passwordIsValid, setPasswordIsValid] = useState(false)
 
-  onEmailChange = event => {
+  const onEmailChange = event => {
     // eslint-disable-next-line
     let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/
 
-    this.setState({ errorMessage: '' })
-
+    setErrorMessage('')
     if (emailRegex.test(event.target.value)) {
-      this.setState({ emailIsValid: true })
+      setEmailIsValid(true)
     } else {
-      this.setState({ emailIsValid: false })
+      setEmailIsValid(false)
     }
-    this.setState({ signInEmail: event.target.value })
+    setSignInEmail(event.target.value)
   }
-  onPasswordChange = event => {
-    this.setState({ errorMessage: '' })
+  const onPasswordChange = event => {
+    setErrorMessage('')
     if (event.target.value) {
-      this.setState({ passwordIsValid: true })
+      setPasswordIsValid(true)
     } else {
-      this.setState({ passwordIsValid: false })
+      setPasswordIsValid(false)
     }
-    this.setState({ signInPassword: event.target.value })
+    setSignInPassword(event.target.value)
   }
 
-  onSubmitSignIn = event => {
+  const onSubmitSignIn = async event => {
     event.preventDefault()
-    fetch('http://localhost:3004/signin', {
+    const response = await fetch('http://localhost:3004/signin', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: this.state.signInEmail,
-        password: this.state.signInPassword,
+        email: signInEmail,
+        password: signInPassword,
       }),
     })
-      .then(response => response.json())
-      .then(data => {
-        if (data.id) {
-          this.props.loadUser(data)
-          this.props.onRouteChange('home')
-        } else if (data === 'credentials empty') {
-          this.setState({ errorMessage: 'Please fill every field in' })
-        } else if (data === 'invalid credentials') {
-          this.setState({ errorMessage: 'Invalid email or password' })
-        } else {
-          this.setState({ errorMessage: 'other' })
-        }
-      })
-      .catch(console.log)
+    const user = await response.json()
+    if (user.id) {
+      loadUser(user)
+      onRouteChange('home')
+    } else if (user === 'credentials empty') {
+      setErrorMessage('Please fill every field in')
+    } else if (user === 'invalid credentials') {
+      setErrorMessage('Invalid email or password')
+    } else {
+      setErrorMessage('other')
+    }
   }
 
-  render() {
-    const { onRouteChange } = this.props
-    return (
-      <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-100-l mw6 shadow-5 center">
-        <main className="pa4 black-80">
-          <form className="measure">
-            <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-              <legend className="f1 fw6 ph0 mh0">Sign In</legend>
-              <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="email-address">
-                  Email
-                </label>
-                <input
-                  onChange={this.onEmailChange}
-                  className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
-                  type="email"
-                  name="email-address"
-                  id="email-address"
-                />
-              </div>
-              <div className="mv3">
-                <label className="db fw6 lh-copy f6" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  onChange={this.onPasswordChange}
-                  className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
-                  type="password"
-                  name="password"
-                  id="password"
-                />
-              </div>
-              {this.state.errorMessage !== '' ? (
-                <p className="dark-red bg-washed-red b--dark-red ba pa2 fw5 f6">
-                  {this.state.errorMessage}
-                </p>
-              ) : (
-                ''
-              )}
-            </fieldset>
-
-            <div className="">
-              <button
-                disabled={
-                  !this.state.emailIsValid || !this.state.passwordIsValid
-                }
-                onSubmit={this.onSubmitSignIn}
-                onClick={this.onSubmitSignIn}
-                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-                type="submit"
-              >
-                Sign In
-              </button>
+  return (
+    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-100-l mw6 shadow-5 center">
+      <main className="pa4 black-80">
+        <form className="measure">
+          <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+            <legend className="f1 fw6 ph0 mh0">Sign In</legend>
+            <div className="mt3">
+              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+                Email
+              </label>
+              <input
+                onChange={onEmailChange}
+                className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
+                type="email"
+                name="email-address"
+                id="email-address"
+              />
             </div>
-            <div className="lh-copy mt3">
-              <p
-                onClick={() => onRouteChange('register')}
-                href="#0"
-                className="f6 link dim black db pointer"
-              >
-                Register
+            <div className="mv3">
+              <label className="db fw6 lh-copy f6" htmlFor="password">
+                Password
+              </label>
+              <input
+                onChange={onPasswordChange}
+                className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
+                type="password"
+                name="password"
+                id="password"
+              />
+            </div>
+            {errorMessage !== '' ? (
+              <p className="dark-red bg-washed-red b--dark-red ba pa2 fw5 f6">
+                {errorMessage}
               </p>
-            </div>
-          </form>
-        </main>
-      </article>
-    )
-  }
+            ) : (
+              ''
+            )}
+          </fieldset>
+
+          <div className="">
+            <button
+              disabled={!emailIsValid || !passwordIsValid}
+              onSubmit={onSubmitSignIn}
+              onClick={onSubmitSignIn}
+              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              type="submit"
+            >
+              Sign In
+            </button>
+          </div>
+          <div className="lh-copy mt3">
+            <p
+              onClick={() => onRouteChange('register')}
+              href="#0"
+              className="f6 link dim black db pointer"
+            >
+              Register
+            </p>
+          </div>
+        </form>
+      </main>
+    </article>
+  )
 }
 
 export default SignIn

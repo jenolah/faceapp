@@ -139,7 +139,6 @@ class App extends Component {
         .then(response => response.json())
         .then(data => {
           this.loadUser(data)
-          console.log(data)
         })
         .catch(console.log)
     }
