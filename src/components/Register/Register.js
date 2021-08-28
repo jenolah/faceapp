@@ -1,187 +1,171 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      email: '',
-      password: '',
-      name: '',
-      nameErrorMessage: '',
-      emailErrorMessage: '',
-      passwordErrorMessage: '',
-      emailIsValid: false,
-      passwordIsValid: false,
-      nameIsValid: false,
-    }
-  }
-  onNameChange = event => {
-    this.setState({ nameErrorMessage: '' })
+const Register = ({ onRouteChange, loadUser }) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [nameErrorMessage, setNameErrorMessage] = useState('')
+  const [emailErrorMessage, setEmailErrorMessage] = useState('')
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+  const [emailIsValid, setEmailIsValid] = useState(false)
+  const [passwordIsValid, setPasswordIsValid] = useState(false)
+  const [nameIsValid, setNameIsValid] = useState(false)
+
+  const onNameChange = event => {
+    setNameErrorMessage('')
     if (event.target.value.length < 3) {
-      this.setState({ nameIsValid: false })
+      setNameIsValid(false)
     } else {
-      this.setState({ nameIsValid: true })
+      setNameIsValid(true)
     }
-
-    this.setState({ name: event.target.value })
+    setName(event.target.value)
   }
 
-  onEmailChange = event => {
-    this.setState({ emailErrorMessage: '' })
+  const onEmailChange = event => {
+    setEmailErrorMessage('')
 
     // eslint-disable-next-line
     let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/
 
     if (emailRegex.test(event.target.value)) {
-      this.setState({ emailIsValid: true })
+      setEmailIsValid(true)
     } else {
-      this.setState({ emailIsValid: false })
+      setEmailIsValid(false)
     }
-    this.setState({ email: event.target.value })
+    setEmail(event.target.value)
   }
 
-  onPasswordChange = event => {
-    this.setState({ passwordErrorMessage: '' })
+  const onPasswordChange = event => {
+    setPasswordErrorMessage('')
 
     // eslint-disable-next-line
     let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
 
     if (passwordRegex.test(event.target.value)) {
-      this.setState({ passwordIsValid: true })
+      setPasswordIsValid(true)
     } else {
-      this.setState({ passwordIsValid: false })
+      setPasswordIsValid(false)
     }
-    this.setState({ password: event.target.value })
+    setPassword(event.target.value)
   }
 
-  onSubmitRegister = event => {
+  const onSubmitRegister = event => {
     event.preventDefault()
 
-    if (
-      this.state.nameIsValid &&
-      this.state.emailIsValid &&
-      this.state.passwordIsValid
-    ) {
-      console.log(this.state.email)
+    if (nameIsValid && emailIsValid && passwordIsValid) {
+      console.log(email)
       fetch('http://localhost:3004/register', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: this.state.email,
-          password: this.state.password,
-          name: this.state.name,
+          email: email,
+          password: password,
+          name: name,
         }),
       })
         .then(response => response.json())
         .then(user => {
           if (user.id) {
-            this.props.loadUser(user)
-            this.props.onRouteChange('home')
+            loadUser(user)
+            onRouteChange('home')
           }
         })
     }
 
-    if (!this.state.nameIsValid) {
-      this.setState({
-        nameErrorMessage: 'Name should be at least 3 characters long',
-      })
+    if (!nameIsValid) {
+      setNameErrorMessage('Name should be at least 3 characters long')
     }
-    if (!this.state.emailIsValid) {
-      this.setState({
-        emailErrorMessage: 'Invalid email',
-      })
+    if (!emailIsValid) {
+      setEmailErrorMessage('Invalid email')
     }
-    if (!this.state.passwordIsValid) {
-      this.setState({
-        passwordErrorMessage:
-          'Password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number',
-      })
+    if (!passwordIsValid) {
+      setPasswordErrorMessage(
+        'Password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number'
+      )
     }
   }
-  render() {
-    return (
-      <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-100-l mw6 shadow-5 center">
-        <main className="pa4 black-80">
-          <form className="measure">
-            <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-              <legend className="f1 fw6 ph0 mh0">Register</legend>
-              <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="name">
-                  Name
-                </label>
-                <input
-                  onChange={this.onNameChange}
-                  className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
-                  type="text"
-                  name="name"
-                  id="name"
-                />
-                {this.state.nameErrorMessage ===
-                'Name should be at least 3 characters long' ? (
-                  <p className="dark-red b--dark-red fw4 f7">
-                    {this.state.nameErrorMessage}
-                  </p>
-                ) : (
-                  ''
-                )}
-              </div>
-              <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="email-address">
-                  Email
-                </label>
-                <input
-                  onChange={this.onEmailChange}
-                  className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
-                  type="email"
-                  name="email-address"
-                  id="email-address"
-                />
-                {this.state.emailErrorMessage === 'Invalid email' ? (
-                  <p className="dark-red b--dark-red fw4 f7">
-                    {this.state.emailErrorMessage}
-                  </p>
-                ) : (
-                  ''
-                )}
-              </div>
-              <div className="mv3">
-                <label className="db fw6 lh-copy f6" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  onChange={this.onPasswordChange}
-                  className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
-                  type="password"
-                  name="password"
-                  id="password"
-                />
-                {this.state.passwordErrorMessage ===
-                'Password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number' ? (
-                  <p className="dark-red b--dark-red fw4 f7">
-                    {this.state.passwordErrorMessage}
-                  </p>
-                ) : (
-                  ''
-                )}
-              </div>
-            </fieldset>
-            <div className="">
-              <button
-                // disabled={
-                //   !this.state.emailIsValid || !this.state.passwordIsValid
-                // }
-                onClick={this.onSubmitRegister}
-                onSubmit={this.onSubmitRegister}
-                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-                type="submit"
-              >
-                Register
-              </button>
+  return (
+    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-100-l mw6 shadow-5 center">
+      <main className="pa4 black-80">
+        <form className="measure">
+          <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+            <legend className="f1 fw6 ph0 mh0">Register</legend>
+            <div className="mt3">
+              <label className="db fw6 lh-copy f6" htmlFor="name">
+                Name
+              </label>
+              <input
+                onChange={onNameChange}
+                className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
+                type="text"
+                name="name"
+                id="name"
+              />
+              {nameErrorMessage ===
+              'Name should be at least 3 characters long' ? (
+                <p className="dark-red b--dark-red fw4 f7">
+                  {nameErrorMessage}
+                </p>
+              ) : (
+                ''
+              )}
             </div>
-          </form>
-        </main>
-      </article>
-    )
-  }
+            <div className="mt3">
+              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+                Email
+              </label>
+              <input
+                onChange={onEmailChange}
+                className="pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
+                type="email"
+                name="email-address"
+                id="email-address"
+              />
+              {emailErrorMessage === 'Invalid email' ? (
+                <p className="dark-red b--dark-red fw4 f7">
+                  {emailErrorMessage}
+                </p>
+              ) : (
+                ''
+              )}
+            </div>
+            <div className="mv3">
+              <label className="db fw6 lh-copy f6" htmlFor="password">
+                Password
+              </label>
+              <input
+                onChange={onPasswordChange}
+                className="b pa2 input-reset ba b--black bg-transparent hover-bg-black hover-white w-100"
+                type="password"
+                name="password"
+                id="password"
+              />
+              {passwordErrorMessage ===
+              'Password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number' ? (
+                <p className="dark-red b--dark-red fw4 f7">
+                  {passwordErrorMessage}
+                </p>
+              ) : (
+                ''
+              )}
+            </div>
+          </fieldset>
+          <div className="">
+            <button
+              // disabled={
+              //   !emailIsValid || !passwordIsValid
+              // }
+              onClick={onSubmitRegister}
+              onSubmit={onSubmitRegister}
+              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              type="submit"
+            >
+              Register
+            </button>
+          </div>
+        </form>
+      </main>
+    </article>
+  )
 }
 export default Register
