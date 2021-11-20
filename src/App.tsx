@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component , ChangeEvent} from 'react'
 import './App.css'
 import Navigation from './components/Navigation/Navigation'
 import SignIn from './components/SignIn/SignIn'
@@ -11,7 +11,25 @@ import Rank from './components/Rank/Rank'
 import Particles from 'react-tsparticles'
 import particlesOptions from './particlesjs-config.json'
 
-const initialState = {
+
+interface State {
+  input: string,
+  imageUrl: string,
+  box: {},
+  route: string,
+  isSignedIn: boolean,
+  user: {
+    id: string | number,
+    name: string,
+    email: string,
+    entries: number,
+    joined: string,
+    rank: number,
+  },
+  faceErrorMessage: string,
+}
+
+const initialState :State ={
   input: '',
   imageUrl: '',
   box: {},
@@ -28,8 +46,8 @@ const initialState = {
   faceErrorMessage: '',
 }
 
-class App extends Component {
-  constructor(props) {
+class App extends Component <any, any> {
+  constructor(props:any) {
     super(props)
     //Particles
     this.particlesInit = this.particlesInit.bind(this)
@@ -39,7 +57,7 @@ class App extends Component {
     this.state = initialState
   }
 
-  loadUser = data => {
+  loadUser = (data:any) => {
     this.setState({
       user: {
         id: data.id,
@@ -52,12 +70,14 @@ class App extends Component {
     })
   }
 
-  calculateFaceLocation = data => {
+  calculateFaceLocation = (data:any) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box
-    const image = document.getElementById('inputimage')
+    const image :any = document.getElementById('inputimage')
     const width = Number(image.width)
     const height = Number(image.height)
+    console.log(data)
+    console.log(image)
     return {
       leftCol: clarifaiFace.left_col * width,
       topRow: clarifaiFace.top_row * height,
@@ -66,12 +86,12 @@ class App extends Component {
     }
   }
 
-  displayFaceBox = box => {
+  displayFaceBox = (box:any) => {
     this.setState({ box: box })
   }
 
   //Linkform
-  onInputChange = event => {
+  onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ input: event.target.value })
     this.setState({ faceErrorMessage: '' })
   }
@@ -117,15 +137,15 @@ class App extends Component {
   }
 
   //Particles
-  particlesInit(main) {
+  particlesInit(main:any) {
     // console.log(main)
     // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
   }
-  particlesLoaded(container) {
+  particlesLoaded(container:any) {
     //  console.log(container)
   }
 
-  onRouteChange = route => {
+  onRouteChange = (route:string) => {
     if (route === 'signout') {
       this.setState(initialState)
       return
@@ -153,7 +173,7 @@ class App extends Component {
         <Particles
           className="particle"
           id="tsparticles"
-          options={particlesOptions}
+       //   options={particlesOptions}
           init={this.particlesInit}
           loaded={this.particlesLoaded}
         />

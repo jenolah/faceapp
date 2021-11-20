@@ -12,7 +12,7 @@ const Logo = () => {
       <Tilt
         className="Tilt br2 shadow-2"
         glarePosition="all"
-        glareEnable="true"
+        glareEnable // when I had this = "true", it said the type doesn't match this: (JSX attribute) glareEnable?: boolean | undefined
         glareColor="yellow"
         style={{ backgroundColor: 'green', height: '150px', width: '150px' }}
       >
