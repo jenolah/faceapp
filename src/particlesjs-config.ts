@@ -1,4 +1,7 @@
-{
+
+import { InteractivityDetect, OutMode, MoveDirection } from 'react-tsparticles'
+
+const particlesOptions = {
   "particles": {
     "number": {
       "value": 80,
@@ -55,10 +58,10 @@
     "move": {
       "enable": true,
       "speed": 3.206824121731046,
-      "direction": "none",
+      "direction": MoveDirection.none,
       "random": true,
       "straight": false,
-      "out_mode": "bounce",
+      "out_mode": OutMode.bounce,
       "bounce": false,
       "attract": {
         "enable": false,
@@ -68,7 +71,7 @@
     }
   },
   "interactivity": {
-    "detect_on": "canvas",
+    "detect_on": InteractivityDetect.canvas,
     "events": {
       "onhover": {
         "enable": false,
@@ -108,3 +111,5 @@
   },
   "retina_detect": true
 }
+
+export default particlesOptions

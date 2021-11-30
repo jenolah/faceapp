@@ -9,7 +9,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import Rank from './components/Rank/Rank'
 import Particles from 'react-tsparticles'
-import particlesOptions from './particlesjs-config.json'
+import particlesOptions from './particlesjs-config'
 
 
 interface State {
@@ -130,7 +130,7 @@ class App extends Component <any, any> {
         })
         .catch(err => {
           this.setState({ faceErrorMessage: 'Invalid URL' }, () => {
-            // console.log(err)
+            console.log(err)
           })
         })
     }
@@ -173,7 +173,7 @@ class App extends Component <any, any> {
         <Particles
           className="particle"
           id="tsparticles"
-       //   options={particlesOptions}
+          options={particlesOptions}
           init={this.particlesInit}
           loaded={this.particlesLoaded}
         />
