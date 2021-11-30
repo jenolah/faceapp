@@ -10,23 +10,15 @@ const SignIn = ({ onRouteChange, loadUser }) => {
 
   const onEmailChange = event => {
     // eslint-disable-next-line
-    let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/
 
     setErrorMessage('')
-    if (emailRegex.test(event.target.value)) {
-      setEmailIsValid(true)
-    } else {
-      setEmailIsValid(false)
-    }
+    setEmailIsValid(emailRegex.test(event.target.value))
     setSignInEmail(event.target.value)
   }
   const onPasswordChange = event => {
     setErrorMessage('')
-    if (event.target.value) {
-      setPasswordIsValid(true)
-    } else {
-      setPasswordIsValid(false)
-    }
+    setPasswordIsValid(event.target.value)
     setSignInPassword(event.target.value)
   }
 
