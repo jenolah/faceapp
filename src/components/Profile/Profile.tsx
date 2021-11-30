@@ -1,7 +1,15 @@
-import React from 'react'
-import './Profile.css'
+import React from "react"
+import "./Profile.css"
 
-const Profile = ({ name, email, entries, joined, rank }) => {
+interface ProfileProps {
+  name: string
+  email: string
+  entries: number
+  joined: string
+  rank: number
+}
+
+const Profile = ({ name, email, entries, joined, rank }: ProfileProps) => {
   return (
     <div className="profile fw7 f5 tl w-100 mr6">
       <table className=" w-100">

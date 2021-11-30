@@ -1,7 +1,17 @@
-import React from 'react'
-import './ImageLinkForm.css'
+import React, { ChangeEvent } from "react"
+import "./ImageLinkForm.css"
 
-const ImageLinkForm = ({ onInputChange, onButtonSubmit, faceErrorMessage }) => {
+interface ImageLinkFormProps {
+  onInputChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onButtonSubmit: () => void
+  faceErrorMessage: string
+}
+
+const ImageLinkForm = ({
+  onInputChange,
+  onButtonSubmit,
+  faceErrorMessage,
+}: ImageLinkFormProps) => {
   return (
     <div>
       <p className="f3">
