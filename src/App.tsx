@@ -1,4 +1,4 @@
-import React, { Component , ChangeEvent} from 'react'
+import { Component, ChangeEvent } from 'react'
 import './App.css'
 import Navigation from './components/Navigation/Navigation'
 import SignIn from './components/SignIn/SignIn'
@@ -11,25 +11,29 @@ import Rank from './components/Rank/Rank'
 import Particles from 'react-tsparticles'
 import particlesOptions from './particlesjs-config'
 
-
-interface State {
-  input: string,
-  imageUrl: string,
-  box: {},
-  route: string,
-  isSignedIn: boolean,
+export interface State {
+  input: string
+  imageUrl: string
+  box: {
+    topRow?: number
+    rightCol?: number
+    bottomRow?: number
+    leftCol?: number
+  }
+  route: string
+  isSignedIn: boolean
   user: {
-    id: string | number,
-    name: string,
-    email: string,
-    entries: number,
-    joined: string,
-    rank: number,
-  },
-  faceErrorMessage: string,
+    id: string | number
+    name: string
+    email: string
+    entries: number
+    joined: string
+    rank: number
+  }
+  faceErrorMessage: string
 }
 
-const initialState :State ={
+const initialState: State = {
   input: '',
   imageUrl: '',
   box: {},
@@ -46,8 +50,8 @@ const initialState :State ={
   faceErrorMessage: '',
 }
 
-class App extends Component <any, any> {
-  constructor(props:any) {
+class App extends Component<any, any> {
+  constructor(props: any) {
     super(props)
     //Particles
     this.particlesInit = this.particlesInit.bind(this)
@@ -57,7 +61,7 @@ class App extends Component <any, any> {
     this.state = initialState
   }
 
-  loadUser = (data:any) => {
+  loadUser = (data: State['user']) => {
     this.setState({
       user: {
         id: data.id,
@@ -70,10 +74,10 @@ class App extends Component <any, any> {
     })
   }
 
-  calculateFaceLocation = (data:any) => {
+  calculateFaceLocation = (data: any) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box
-    const image :any = document.getElementById('inputimage')
+    const image: any = document.getElementById('inputimage')
     const width = Number(image.width)
     const height = Number(image.height)
     console.log(data)
@@ -86,7 +90,7 @@ class App extends Component <any, any> {
     }
   }
 
-  displayFaceBox = (box:any) => {
+  displayFaceBox = (box: any) => {
     this.setState({ box: box })
   }
 
@@ -137,15 +141,15 @@ class App extends Component <any, any> {
   }
 
   //Particles
-  particlesInit(main:any) {
+  particlesInit(main: any) {
     // console.log(main)
     // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
   }
-  particlesLoaded(container:any) {
+  particlesLoaded(container: any) {
     //  console.log(container)
   }
 
-  onRouteChange = (route:string) => {
+  onRouteChange = (route: string) => {
     if (route === 'signout') {
       this.setState(initialState)
       return
@@ -169,10 +173,10 @@ class App extends Component <any, any> {
     const { isSignedIn, imageUrl, route, box } = this.state
     const { name, email, entries, joined, rank } = this.state.user
     return (
-      <div className="App">
+      <div className='App'>
         <Particles
-          className="particle"
-          id="tsparticles"
+          className='particle'
+          id='tsparticles'
           options={particlesOptions}
           init={this.particlesInit}
           loaded={this.particlesLoaded}
@@ -201,7 +205,7 @@ class App extends Component <any, any> {
             loadUser={this.loadUser}
           />
         ) : (
-          <div className="flex">
+          <div className='flex'>
             <Logo />
             <Profile
               name={name}

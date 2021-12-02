@@ -1,14 +1,20 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './SignIn.css'
+import {State} from '../../App'
 
-const SignIn = ({ onRouteChange, loadUser }) => {
+type SignInProps = {
+  onRouteChange: (route: string) => void,
+  loadUser: (data:State["user"]) => void
+}
+
+const SignIn = ({ onRouteChange, loadUser }:SignInProps) => {
   const [signInEmail, setSignInEmail] = useState('')
   const [signInPassword, setSignInPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [emailIsValid, setEmailIsValid] = useState(false)
   const [passwordIsValid, setPasswordIsValid] = useState(false)
 
-  const onEmailChange = event => {
+  const onEmailChange = (event: any) => {
     // eslint-disable-next-line
     const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/
 
@@ -16,13 +22,13 @@ const SignIn = ({ onRouteChange, loadUser }) => {
     setEmailIsValid(emailRegex.test(event.target.value))
     setSignInEmail(event.target.value)
   }
-  const onPasswordChange = event => {
+  const onPasswordChange = (event:any) => {
     setErrorMessage('')
     setPasswordIsValid(event.target.value)
     setSignInPassword(event.target.value)
   }
 
-  const onSubmitSignIn = async event => {
+  const onSubmitSignIn = async (event:any) => {
     event.preventDefault()
     const response = await fetch('http://localhost:3004/signin', {
       method: 'post',
@@ -98,7 +104,7 @@ const SignIn = ({ onRouteChange, loadUser }) => {
           <div className="lh-copy mt3">
             <p
               onClick={() => onRouteChange('register')}
-              href="#0"
+             //href="#0"
               className="f6 link dim black db pointer"
             >
               Register

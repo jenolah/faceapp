@@ -2,11 +2,11 @@ import React from "react"
 import "./Profile.css"
 
 interface ProfileProps {
-  name: string
-  email: string
-  entries: number
-  joined: string
-  rank: number
+  name: string,
+  email: string,
+  entries: number,
+  joined: string,
+  rank: number,
 }
 
 const Profile = ({ name, email, entries, joined, rank }: ProfileProps) => {

@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
+import {State} from '../../App'
 
-const Register = ({ onRouteChange, loadUser }) => {
+type RegisterProps = {
+  onRouteChange: (route: string) => void,
+  loadUser: (data:State["user"]) => void
+}
+
+const Register = ({ onRouteChange, loadUser }: RegisterProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -11,7 +17,7 @@ const Register = ({ onRouteChange, loadUser }) => {
   const [passwordIsValid, setPasswordIsValid] = useState(false)
   const [nameIsValid, setNameIsValid] = useState(false)
 
-  const onNameChange = event => {
+  const onNameChange = (event:any) => {
     setNameErrorMessage('')
     if (event.target.value.length < 3) {
       setNameIsValid(false)
@@ -21,7 +27,7 @@ const Register = ({ onRouteChange, loadUser }) => {
     setName(event.target.value)
   }
 
-  const onEmailChange = event => {
+  const onEmailChange = (event:any) => {
     setEmailErrorMessage('')
 
     // eslint-disable-next-line
@@ -35,7 +41,7 @@ const Register = ({ onRouteChange, loadUser }) => {
     setEmail(event.target.value)
   }
 
-  const onPasswordChange = event => {
+  const onPasswordChange = (event:any) => {
     setPasswordErrorMessage('')
 
     // eslint-disable-next-line
@@ -49,7 +55,7 @@ const Register = ({ onRouteChange, loadUser }) => {
     setPassword(event.target.value)
   }
 
-  const onSubmitRegister = event => {
+  const onSubmitRegister = (event:any) => {
     event.preventDefault()
 
     if (nameIsValid && emailIsValid && passwordIsValid) {
@@ -152,9 +158,9 @@ const Register = ({ onRouteChange, loadUser }) => {
           </fieldset>
           <div className="">
             <button
-              // disabled={
-              //   !emailIsValid || !passwordIsValid
-              // }
+              disabled={
+                !emailIsValid || !passwordIsValid
+              }
               onClick={onSubmitRegister}
               onSubmit={onSubmitRegister}
               className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"

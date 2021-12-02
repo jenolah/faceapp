@@ -1,7 +1,7 @@
 interface NavigationProps {
-  onRouteChange: (route: string) => void
-  isSignedIn: boolean
-  route: string
+  onRouteChange: (route: string) => void,
+  isSignedIn: boolean,
+  route: string,
 }
 
 const Navigation = ({ onRouteChange, isSignedIn, route }: NavigationProps) => {

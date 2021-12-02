@@ -1,14 +1,10 @@
 import React from "react"
 import "./FaceRecognition.css"
+import { State } from '../../App'
 
 interface FaceRecognitionProps {
-  imageUrl: string
-  box: {
-    topRow: number
-    rightCol: number
-    bottomRow: number
-    leftCol: number
-  }
+  imageUrl: State["imageUrl"],
+  box: State["box"],
 }
 
 const FaceRecognition = ({ imageUrl, box }: FaceRecognitionProps) => {

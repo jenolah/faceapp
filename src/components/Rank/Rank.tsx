@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface RankProps {
-  name: string
+  name: string,
   rank: number
 }
 
