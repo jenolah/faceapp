@@ -31,6 +31,7 @@ export interface State {
     rank: number
   }
   faceErrorMessage: string
+  isLoadingErrorMessage: boolean
 }
 
 const initialState: State = {
@@ -48,6 +49,7 @@ const initialState: State = {
     rank: 0,
   },
   faceErrorMessage: '',
+  isLoadingErrorMessage: false,
 }
 
 class App extends Component<any, any> {
@@ -102,8 +104,10 @@ class App extends Component<any, any> {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
+    this.setState({ isLoadingErrorMessage: true })
     if (this.state.input === '') {
       this.setState({ faceErrorMessage: 'Field cannot be empty' })
+      this.setState({ isLoadingErrorMessage: false })
     } else {
       fetch('http://localhost:3004/imageurl', {
         method: 'post',
@@ -125,6 +129,7 @@ class App extends Component<any, any> {
               .then(response => response.json())
               .then(count => {
                 this.setState(Object.assign(this.state.user, { rank: count }))
+                this.setState({ isLoadingErrorMessage: false })
               })
               .catch(console.log)
           } else {
@@ -136,6 +141,7 @@ class App extends Component<any, any> {
           this.setState({ faceErrorMessage: 'Invalid URL' }, () => {
             console.log(err)
           })
+          this.setState({ isLoadingErrorMessage: false })
         })
     }
   }
@@ -194,6 +200,7 @@ class App extends Component<any, any> {
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
               faceErrorMessage={this.state.faceErrorMessage}
+              isLoadingErrorMessage={this.state.isLoadingErrorMessage}
             />
             <FaceRecognition box={box} imageUrl={imageUrl} />
           </div>
